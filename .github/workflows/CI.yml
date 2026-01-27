@@ -1,0 +1,24 @@
+name: CI-CD
+
+on:
+  push:
+    branches:
+    - main
+  workflow_dispatch:    
+
+
+jobs:
+  CI:
+    name: Verificando codigo 
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    
+
