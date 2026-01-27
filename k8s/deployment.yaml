@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: netflix-clone
+  labels:
+    app: netflix-clone  
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: netflix-clone
+  template:
+    metadata:
+      labels:
+        app: netflix-clone
+        #habilitando leitura de metricas do prometheus
+      # annotations:
+      #   prometheus.io/scrap: "true"
+      #   prometheus.io/port: "8000"
+      #   prometheus.io/path: "/metrics"
+
+    spec:
+      containers:
+      - name: netflix-clone
+        image: gui3398/netflix-clone:v1
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+            
+       
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: netflix-clone-service
+  labels:
+    app: netflix-clone
+
+  #leitura de metricas para prometheus
+  #annotations  
+
+spec:
+  type: LoadBalancer
+  selector:
+    app: netflix-clone
+  ports:
+  - port: 8080
+    targetPort: 80
+    protocol: TCP
