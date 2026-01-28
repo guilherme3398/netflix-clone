@@ -58,10 +58,9 @@ jobs:
           context: .
           push: true
           tags: |
-            
             ${{ secrets.DOCKERHUB_USERNAME }}/netflix-clone:v1
             
           build-args: |
             TMDB_V3_API_KEY=${{ secrets.TMDB_V3_API_KEY }}
 
-        # tags por run number ${{ secrets.DOCKERHUB_USERNAME }}/netflix-clone:v${{ github.run_number }}   
+            
