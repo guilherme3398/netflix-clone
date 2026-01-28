@@ -15,8 +15,22 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v6
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'yarn'
 
-      - name: SonarQube Scan
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile
+
+      # Executa os testes e gera o relatório de cobertura (LCOV)      
+      - name: Testes de Cobertura de codigo
+        run: yarn test:coverage 
+        continue-on-error: true # Permite que o Sonar analise mesmo se alguns testes falharem
+
+
+      - name: SonarQube Scaneando Codigo
         uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
