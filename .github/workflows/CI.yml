@@ -103,8 +103,8 @@ jobs:
         - name: Baixar policy oficial do AWS Load Balancer Controller
           run: |
             mkdir -p terraform/modulos/load-balancer 
-            curl  -sSL -o terraform/modulos/load-balancer/iam_policy.json \ 
-            https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.13.3/docs/install/iam_policy.json
+            curl -sSL https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.13.3/docs/install/iam_policy.json -o terraform/modulos/load-balancer/iam_policy.json
+
 
         - name: Configure AWS Credentials
           uses: aws-actions/configure-aws-credentials@v5.1.0
