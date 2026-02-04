@@ -65,7 +65,7 @@ jobs:
 
 # Deploy do cluster kubernetes
   Infraestrutura:
-    name: Infraestrutura com Terraform
+    name: Criando a Infraestrutura com Terraform
     needs: Build
     runs-on: ubuntu-latest
     steps:

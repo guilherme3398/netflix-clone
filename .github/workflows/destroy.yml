@@ -1,0 +1,39 @@
+name: Destruindo Recursos
+
+on:
+  workflow_dispatch:    
+
+jobs:
+    Destroy:
+        name: Destruindo Recursos
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v6  
+
+            - name: Configure AWS Credentials
+              uses: aws-actions/configure-aws-credentials@v5.1.0
+              with:
+                aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                aws-region: us-east-1
+
+            - name: Configurando Kubeconfig
+              run: aws eks update-kubeconfig --name proj-netflix-clone-eks-cluster --region us-east-1 
+                
+            - name: Destruindo aplicação
+              run: |
+                kubectl delete -f k8s/deployment.yaml 
+                kubectl delete -f k8s/ingress.yaml 
+                kubectl delete -f k8s/service.yaml   
+                  
+            - name: Instalando Terraform
+              uses: hashicorp/setup-terraform@v3 
+
+            - name: Terraform Init
+              run: terraform init
+              working-directory: ./terraform
+
+            - name: Terraform Destroy
+              run: terraform destroy -auto-approve
+              working-directory: ./terraform     
