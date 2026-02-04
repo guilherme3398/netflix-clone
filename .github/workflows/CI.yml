@@ -122,6 +122,25 @@ jobs:
            kubectl apply -f k8s/ingress.yaml 
            kubectl apply -f k8s/service.yaml   
         
-        - name: URL da aplicação
-          run: kubectl get ingress   
-  
+         
+  #Aguardando URL da Aplicação
+
+        - name: Obtendo URL da Aplicação
+          run: |
+            echo "Aguardando o AWS Load Balancer provisionar o DNS..."
+            
+            for i in {1..20}; do
+              
+              URL=$(kubectl get ingress netflix-clone-ingress -o jsonpath='{.status.loadBalancer.ingress[0].hostname}' 2>/dev/null || echo "")
+              if [ -n "$URL" ]; then
+                echo "---------------------------------------------------"
+                echo "🚀 APLICAÇÃO PUBLICADA COM SUCESSO!"
+                echo "🔗 URL: http://$URL"
+                echo "---------------------------------------------------"
+                exit 0
+              fi
+              echo "Tentativa $i: URL ainda não disponível (pending)..."
+              sleep 15
+            done
+            
+            echo "⚠️ O Load Balancer está demorando para responder. Verifique manualmente com: kubectl get ingress"    
