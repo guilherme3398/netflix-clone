@@ -63,4 +63,65 @@ jobs:
           build-args: |
             TMDB_V3_API_KEY=${{ secrets.TMDB_V3_API_KEY }}
 
-            
+# Deploy do cluster kubernetes
+  Infraestrutura:
+    name: Infraestrutura com Terraform
+    needs: Build
+    runs-on: ubuntu-latest
+    steps:
+       - name: Configure AWS Credentials
+         uses: aws-actions/configure-aws-credentials@v5.1.0
+         with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+       - name: Checkout Code
+         uses: actions/checkout@v6  
+
+       - name: Instalando Terraform
+         uses: hashicorp/setup-terraform@v3 
+
+       - name: Terraform Init
+         run: terraform init
+         working-directory: ./terraform
+
+       - name: Terraform Apply
+         run: terraform apply -auto-approve
+         working-directory: ./terraform
+
+# Deploy da aplicação no kubernetes
+
+  Deploy_kubernetes:
+      name: Deploy da aplicação
+      needs: Infraestrutura
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout Code
+          uses: actions/checkout@v6  
+
+        - name: Baixar policy oficial do AWS Load Balancer Controller
+          run: |
+            mkdir -p terraform/modulos/load-balancer 
+            curl  -sSL -o terraform/modulos/load-balancer/iam_policy.json \ 
+            https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.13.3/docs/install/iam_policy.json
+
+        - name: Configure AWS Credentials
+          uses: aws-actions/configure-aws-credentials@v5.1.0
+          with:
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: us-east-1
+
+        - name: Configurando Kubeconfig
+          run: aws eks update-kubeconfig --name proj-netflix-clone-eks-cluster --region us-east-1 
+          
+        - name: Deploy da aplicação
+          run: |
+           kubectl apply -f deployment.yaml 
+           kubectl apply -f ingress.yaml 
+           kubectl apply -f service.yaml   
+        
+        - name: URL da aplicação
+          run: kubectl get ingress   
+  

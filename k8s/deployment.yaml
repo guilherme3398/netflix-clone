@@ -43,24 +43,3 @@ spec:
             port: 80
           initialDelaySeconds: 5
           periodSeconds: 10
-
----
-
-apiVersion: v1
-kind: Service
-metadata:
-  name: netflix-clone-service
-  labels:
-    app: netflix-clone
-
-  #leitura de metricas para prometheus
-  #annotations  
-
-spec:
-  type: LoadBalancer
-  selector:
-    app: netflix-clone
-  ports:
-  - port: 8080
-    targetPort: 80
-    protocol: TCP

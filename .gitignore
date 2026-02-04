@@ -30,3 +30,6 @@ yarn-error.log*
 # Logs e arquivos de sistema
 *.log
 .DS_Store
+
+#k8s
+deployment-nlb.txt
