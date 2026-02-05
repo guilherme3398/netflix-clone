@@ -25,7 +25,11 @@ jobs:
               run: |
                 kubectl delete -f k8s/deployment.yaml 
                 kubectl delete -f k8s/ingress.yaml 
-                kubectl delete -f k8s/service.yaml   
+                kubectl delete -f k8s/service.yaml
+                
+            - name: Destruindo OBSERVABILIDADE 
+              run: |
+                kubectl delete -f terraform/modulos/observabilidade/kube-prometheus-stack/ingress-grafana.yaml     
                   
             - name: Instalando Terraform
               uses: hashicorp/setup-terraform@v3 
