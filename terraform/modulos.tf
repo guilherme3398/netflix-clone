@@ -41,3 +41,17 @@ module "eks_aws_load_balancer_controller" {
     module.eks_managed_node_group
   ]
 }
+
+module "kube_prometheus_stack" {
+  source            = "./modulos/observabilidade/kube-prometheus-stack"
+  project_name      = var.project_name
+  eks_name      = module.cluster_eks.eks_name
+  tags              = local.tags
+  vpc_id       = module.eks_network.vpc_id
+
+depends_on = [
+    module.cluster_eks,
+    module.eks_managed_node_group,
+    module.eks_aws_load_balancer_controller
+  ]
+}

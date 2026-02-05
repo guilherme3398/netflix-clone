@@ -122,6 +122,9 @@ jobs:
            kubectl apply -f k8s/ingress.yaml 
            kubectl apply -f k8s/service.yaml   
         
+        - name: Deploy de OBSERVABILIDADE 
+          run: |
+           kubectl apply -f terraform/modulos/observabilidade/kube-prometheus-stack/ingress-grafana.yaml 
          
   #Aguardando URL da Aplicação
 
@@ -143,4 +146,6 @@ jobs:
               sleep 15
             done
             
-            echo "⚠️ O Load Balancer está demorando para responder. Verifique manualmente com: kubectl get ingress"    
+            echo "⚠️ O Load Balancer está demorando para responder. Verifique manualmente com: kubectl get ingress"  
+            
+             
