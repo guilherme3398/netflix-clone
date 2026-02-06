@@ -146,6 +146,4 @@ jobs:
               sleep 15
             done
             
-            echo "⚠️ O Load Balancer está demorando para responder. Verifique manualmente com: kubectl get ingress"  
-            
-             
+            echo "⚠️ O Load Balancer está demorando para responder. Verifique manualmente com: kubectl get ingress"
