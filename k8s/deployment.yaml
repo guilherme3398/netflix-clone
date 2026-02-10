@@ -13,12 +13,7 @@ spec:
     metadata:
       labels:
         app: netflix-clone
-        #habilitando leitura de metricas do prometheus
-      # annotations:
-      #   prometheus.io/scrap: "true"
-      #   prometheus.io/port: "8000"
-      #   prometheus.io/path: "/metrics"
-
+  
     spec:
       containers:
       - name: netflix-clone
